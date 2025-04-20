@@ -36,9 +36,7 @@ function handleSubmit(event) {
     .then(response => {
       const totalPages = Math.ceil(response.totalHits / limit);
 
-      createGallery(response.hits);
-
-      if (response.hits.length === 0) {
+      if (!response.hits.length) {
         iziToast.error({
           message:
             'Sorry, there are no images matching your search query. Please try again!',
@@ -50,6 +48,8 @@ function handleSubmit(event) {
 
         return;
       }
+
+      createGallery(response.hits);
 
       if (page < totalPages) {
         showLoadMoreButton();
@@ -85,8 +85,6 @@ async function onLoadMore() {
 
     createGallery(data.hits);
 
-    loadMore.disabled = false;
-
     const item = document.querySelector('.gallery-item');
     const itemHeight = item.getBoundingClientRect().height;
 
@@ -95,6 +93,8 @@ async function onLoadMore() {
       top: itemHeight * 2,
       behavior: 'smooth',
     });
+
+    loadMore.disabled = false;
 
     if (page >= totalPages1) {
       hideLoadMoreButton();
