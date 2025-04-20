@@ -29,26 +29,26 @@ function handleSubmit(event) {
   clearGallery();
   showLoader();
 
-  const inputEl1 = input.value.toLowerCase().trim();
+  const inputEl = input.value.toLowerCase().trim();
 
-  getImagesByQuery(inputEl1, page)
+  getImagesByQuery(inputEl, page)
     .then(response => {
-      const totalPages = Math.ceil(response.totalHits / limit);
-
       showLoadMoreButton();
-
-      hideLoader();
 
       createGallery(response.hits);
 
-      if (response.hits.length === 0 || response.totalHits.length === 0) {
+      const totalPages = Math.ceil(response.totalHits / limit);
+
+      if (response.hits.length === 0) {
         iziToast.error({
           message:
             'Sorry, there are no images matching your search query. Please try again!',
           position: 'center',
         });
 
+        hideLoader();
         hideLoadMoreButton();
+
         return;
       }
 
@@ -80,9 +80,10 @@ async function onLoadMore() {
     hideLoadMoreButton();
     showLoader();
 
-    const data = await getImagesByQuery(input.value, page);
+    const data = await getImagesByQuery(input.value.trim(), page);
 
     createGallery(data.hits);
+
     loadMore.disabled = false;
 
     const totalPages1 = Math.ceil(data.totalHits / limit);
@@ -98,7 +99,6 @@ async function onLoadMore() {
 
     if (page >= totalPages1) {
       hideLoadMoreButton();
-      hideLoader();
 
       iziToast.info({
         position: 'topRight',
