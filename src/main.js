@@ -30,14 +30,13 @@ function handleSubmit(event) {
   showLoader();
 
   const inputEl = input.value.toLowerCase().trim();
+  page = 1;
 
   getImagesByQuery(inputEl, page)
     .then(response => {
-      showLoadMoreButton();
+      const totalPages = Math.ceil(response.totalHits / limit);
 
       createGallery(response.hits);
-
-      const totalPages = Math.ceil(response.totalHits / limit);
 
       if (response.hits.length === 0) {
         iziToast.error({
@@ -82,11 +81,11 @@ async function onLoadMore() {
 
     const data = await getImagesByQuery(input.value.trim(), page);
 
+    const totalPages1 = Math.ceil(data.totalHits / limit);
+
     createGallery(data.hits);
 
     loadMore.disabled = false;
-
-    const totalPages1 = Math.ceil(data.totalHits / limit);
 
     const item = document.querySelector('.gallery-item');
     const itemHeight = item.getBoundingClientRect().height;
